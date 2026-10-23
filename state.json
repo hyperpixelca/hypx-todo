@@ -10,7 +10,12 @@
   "shayan-tag": "2026-10-23T20:13:01.973Z",
   "el-chapel-numbers": "2026-10-23T20:16:02.494Z"
  },
- "skipped": {},
+ "skipped": {
+  "el-price-page": {
+   "reason": "will do in the future",
+   "at": "2026-10-23T20:16:10.078Z"
+  }
+ },
  "mine": [],
  "hide": false
 }

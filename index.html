@@ -18,7 +18,14 @@ h1{margin:0 0 4px;font-size:26px}.sub{color:var(--muted);margin:0 0 20px}
 section{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 16px;margin-bottom:16px}
 h2{font-size:16px;margin:12px 0 4px}
 .item{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
-h2+.item{border-top:none}
+h2+.item,.sh+.item{border-top:none}
+.sh{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0 6px}.sh h2{margin:0}
+.logo{display:inline-flex;align-items:center;padding:6px 10px;border-radius:8px;background:var(--lb);border:1px solid var(--line)}.logo img{display:block;width:auto}
+section.brand{--bp:var(--bpl);--bt:var(--btl);--bc:var(--bcl);border-left:6px solid var(--bp)}
+section.brand h2{color:var(--bt)}
+section.brand .item input[type=checkbox]{accent-color:var(--bc)}
+section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
+@media (prefers-color-scheme:dark){section.brand{--bp:var(--bpd);--bt:var(--btd);--bc:var(--bcd)}}
 .item input[type=checkbox]{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--accent);cursor:pointer}
 .t{font-weight:600}.d{color:var(--muted);font-size:14px;margin-top:2px}
 .tag{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 8px;margin-left:6px;font-weight:500}
@@ -50,9 +57,9 @@ h2+.item{border-top:none}
 </main>
 <script>
 // ===== Ops Orchestrator edits this block =====
-const UPDATED = "Thu Oct 22, 2026, 7:00 PM PT";
+const UPDATED = "Thu Oct 22, 2026, 7:08 PM PT";
 const LISTS = [
- {title:"East Lawn", items:[
+ {title:"East Lawn", brand:{logo:"logos/eastlawn.png", h:40, logoBg:"#F5F0E4", primary:"#384920", text:"#384920", check:"#5A762B", primaryDark:"#5A762B", textDark:"#E8CA64", checkDark:"#E8CA64"}, items:[
   {id:"el-planning-call", t:"Tap-to-call link on /planning/", d:"This page gets the preplanning traffic. Keep the preplan form on /planning/, and tell Website Manager before you move or swap it.", tag:"Top priority", hot:true},
   {id:"el-home-popup", t:"Homepage \"A Death Has Occurred\" popup", d:"Point both copies of the hero button at one Elementor Pro popup with 4 tap-to-call buttons: East Sac 732-2000, Greenback & I80 732-2020, Elk Grove 732-2031, South Sac 732-2026. In the button's Link field, go to Dynamic Tags, then Actions, then Popup."},
   {id:"el-3pages-call", t:"Tap-to-call links on /services/, /obituaries/, /frequently-asked-questions/"},
@@ -65,11 +72,11 @@ const LISTS = [
   {id:"mc-sept-import", t:"East Lawn September Mailchimp import: Newsletter Bot", d:"Andrea sent 4 location files in \"AN Mortuary Sept. 2026\" on 10/21."},
   {id:"sonny-photo", t:"Sonny Beltram staff photo swap: Website Manager", d:"Andrea requested this on monday.com."}
  ]},
- {title:"Remarkable Home Remodeling", items:[
+ {title:"Remarkable Home Remodeling", brand:{logo:"logos/remarkable.png", h:34, logoBg:"#FFFFFF", primary:"#D4642C", text:"#112E36", check:"#D4642C", primaryDark:"#D4642C", textDark:"#D4642C", checkDark:"#D4642C"}, items:[
   {id:"shayan-tag", t:"Shayan (BLC): confirm the redirect tag", d:"Either confirm the form always redirects with exactly ?submitted=1, or have the Meta rule match on submitted=. After that the new number goes in and the HTML zip goes to Shayan."},
   {id:"rhr-launch-go", t:"RHR Meta launch: final go", d:"The campaign is built and paused. Once the tag is confirmed, the pages get installed and tracking gets tested. Then you give the go."}
  ]},
- {title:"SactoMoFo", items:[
+ {title:"SactoMoFo", brand:{logo:"logos/sactomofo.png", h:44, logoBg:"#000000", primary:"#CA2923", text:"#CA2923", check:"#EF6723", primaryDark:"#EF6723", textDark:"#EF6723", checkDark:"#E8A119"}, items:[
   {id:"sactomofo-blogs", t:"SactoMoFo blogs"}
  ]},
  {title:"Gaynell Rogers", items:[
@@ -89,7 +96,10 @@ function row(it,mine,i){const done=!!S.done[it.id];
  return `<div class="item ${done?"done":""}"><input type="checkbox" data-id="${it.id}" ${done?"checked":""}><div><div class="t">${esc(it.t)}${it.tag?`<span class="tag ${it.hot?"hot":""}">${esc(it.tag)}</span>`:""}</div>${it.d?`<div class="d">${esc(it.d)}</div>`:""}</div>${mine?`<button class="del" data-i="${i}" title="Remove">×</button>`:""}</div>`}
 function render(){
  document.getElementById("updated").textContent=UPDATED;
- document.getElementById("lists").innerHTML=LISTS.map(l=>`<section><h2>${esc(l.title)}</h2>${l.items.map(it=>row(it)).join("")}</section>`).join("");
+ document.getElementById("lists").innerHTML=LISTS.map(l=>{const b=l.brand;
+  const st=b?` class="brand" style="--bpl:${b.primary};--btl:${b.text};--bcl:${b.check};--bpd:${b.primaryDark};--btd:${b.textDark};--bcd:${b.checkDark};--lb:${b.logoBg}"`:"";
+  const lg=b&&b.logo?`<span class="logo"><img src="${b.logo}" alt="${esc(l.title)} logo" style="height:${b.h||36}px"></span>`:"";
+  return `<section${st}><div class="sh">${lg}<h2>${esc(l.title)}</h2></div>${l.items.map(it=>row(it)).join("")}</section>`}).join("");
  document.getElementById("mine").innerHTML=S.mine.map((it,i)=>row(it,true,i)).join("");
  document.getElementById("app").classList.toggle("hide-done",S.hide);
  document.getElementById("toggleDone").classList.toggle("on",S.hide);

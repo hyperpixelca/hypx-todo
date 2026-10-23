@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:,">
 <title>Jack's To-Do</title>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#16181d;--muted:#6b7280;--line:#e5e7eb;--accent:#2563eb;--hot:#dc2626}
@@ -37,6 +38,27 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 .add input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
 .add button{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font:inherit}
 .foot{color:var(--muted);font-size:13px;margin-top:8px}
+.item.skipped .t,.item.skipped .d{opacity:.55}
+.hide-done .item.skipped{display:none}
+.item .body{flex:1;min-width:0}
+.acts{display:flex;gap:6px;align-items:flex-start;margin-left:auto;flex:none}
+.sk{border:1px solid var(--line);background:none;color:var(--muted);border-radius:6px;padding:1px 8px;font:inherit;font-size:12px;cursor:pointer}
+.sk:hover{color:var(--ink);border-color:var(--muted)}
+.pill{display:inline-block;font-size:12px;border-radius:999px;padding:0 8px;margin-left:6px;font-weight:600;background:var(--line);color:var(--muted)}
+.why{font-style:italic;color:var(--muted);font-size:14px;margin-top:2px}
+.undo{border:none;background:none;color:var(--accent);cursor:pointer;font:inherit;font-size:13px;padding:0;margin-left:6px;text-decoration:underline}
+.skipbox{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.skipbox input{flex:1;min-width:160px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.skipbox button,.sync button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 12px;cursor:pointer;font:inherit;font-size:14px}
+.skipbox button.pri,.sync button.pri{border-color:var(--accent);background:var(--accent);color:#fff}
+.status{color:var(--muted);font-size:13px;margin:-8px 0 16px}
+.status.err{color:var(--hot)}
+.sync{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;margin-bottom:16px;font-size:14px}
+.sync[hidden]{display:none}
+.sync p{margin:0 0 8px;color:var(--muted)}
+.sync .row{display:flex;gap:6px;flex-wrap:wrap}
+.sync input{flex:1;min-width:200px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+.sync a{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -45,7 +67,13 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 <p class="sub">Things only you can do by hand. Last updated by Ops Orchestrator: <span id="updated"></span></p>
 <div class="bar">
   <button id="toggleDone">Hide done</button>
+  <button id="syncBtn" title="Sync settings">&#9881; Connect sync</button>
   <span class="count" id="count"></span>
+</div>
+<p class="status" id="status"></p>
+<div class="sync" id="syncPanel" hidden>
+  <p>Paste your GitHub fine-grained token for the jack-todo repo. It stays in this browser only. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a token</a></p>
+  <div class="row"><input type="password" id="tokenIn" placeholder="github_pat_..." autocomplete="off" spellcheck="false"><button class="pri" id="tokenSave">Save</button><button id="tokenDisc">Disconnect</button></div>
 </div>
 <div id="lists"></div>
 <section>
@@ -53,11 +81,11 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
   <div id="mine"></div>
   <div class="add"><input id="newItem" placeholder="Add your own item and press Enter"><button id="addBtn">Add</button></div>
 </section>
-<p class="foot">Your checkmarks and your own items save in this browser. Ops Orchestrator updates the main list here, at the same address.</p>
+<p class="foot">Checks, skips and your own items save in this browser, and they sync to GitHub once connected, so they show up on any device. Ops Orchestrator updates the main list here, at the same address.</p>
 </main>
 <script>
 // ===== Ops Orchestrator edits this block =====
-const UPDATED = "Fri Oct 23, 2026, 8:10 AM PT";
+const UPDATED = "Fri Oct 23, 2026, 1:10 PM PT";
 const LISTS = [
  {title:"East Lawn", brand:{logo:"logos/eastlawn.png", h:40, logoBg:"#F5F0E4", primary:"#384920", text:"#384920", check:"#5A762B", primaryDark:"#5A762B", textDark:"#E8CA64", checkDark:"#E8CA64"}, items:[
   {id:"el-planning-call", t:"Tap-to-call link on /planning/", d:"This page gets the preplanning traffic. Keep the preplan form on /planning/, and tell Website Manager before you move or swap it.", tag:"Top priority", hot:true},
@@ -88,31 +116,105 @@ const LISTS = [
  ]}
 ];
 // ===== end of edit block =====
-const K="jack-todo-v1";
-const S=JSON.parse(localStorage.getItem(K)||'{"done":{},"mine":[],"hide":false}');
-const save=()=>localStorage.setItem(K,JSON.stringify(S));
+const K="jack-todo-v1",TK="jack-todo-token",PK="jack-todo-pending",MK="jack-todo-migrated";
+const API="https://api.github.com/repos/hyperpixelca/jack-todo/contents/state.json";
+const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function row(it,mine,i){const done=!!S.done[it.id];
- return `<div class="item ${done?"done":""}"><input type="checkbox" data-id="${it.id}" ${done?"checked":""}><div><div class="t">${esc(it.t)}${it.tag?`<span class="tag ${it.hot?"hot":""}">${esc(it.tag)}</span>`:""}</div>${it.d?`<div class="d">${esc(it.d)}</div>`:""}</div>${mine?`<button class="del" data-i="${i}" title="Remove">×</button>`:""}</div>`}
-function render(){
- document.getElementById("updated").textContent=UPDATED;
- document.getElementById("lists").innerHTML=LISTS.map(l=>{const b=l.brand;
+const now=()=>new Date().toISOString();
+const ts=v=>typeof v==="string"?Date.parse(v)||0:0;
+function norm(o){o=o&&typeof o==="object"?o:{};const s={done:{},skipped:{},mine:[],hide:!!o.hide};
+ for(const[k,v]of Object.entries(o.done||{}))if(v)s.done[k]=typeof v==="string"?v:now();
+ for(const[k,v]of Object.entries(o.skipped||{}))if(v)s.skipped[k]={reason:String(v.reason||""),at:v.at||now()};
+ if(Array.isArray(o.mine))for(const m of o.mine)if(m&&m.id&&!s.mine.some(x=>x.id===m.id))s.mine.push({id:m.id,t:String(m.t||""),at:m.at||now()});
+ return s}
+const ls=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+let S=norm(ls(K,null));
+let P=ls(PK,[]);if(!Array.isArray(P))P=[];
+// One-time: turn checks saved by the old browser-only version into pending changes, so they merge into GitHub on connect.
+if(!localStorage.getItem(MK)){const old=ls(K,null);
+ if(old){for(const[k,v]of Object.entries(old.done||{}))if(v)P.push({op:"check",id:k,at:typeof v==="string"?v:now()});
+  for(const m of(old.mine||[]))if(m&&m.id)P.push({op:"add",item:{id:m.id,t:String(m.t||""),at:m.at||now()},at:m.at||now()});
+  if(old.hide)P.push({op:"hide",v:true,at:now()})}
+ localStorage.setItem(MK,"1");localStorage.setItem(PK,JSON.stringify(P))}
+let remote=null,sha=null,busy=false,timer=null,editing=null,lastSync=null;
+const token=()=>localStorage.getItem(TK)||"";
+function apply(s,o){const at=ts(o.at);
+ if(o.op==="check"){if(ts(s.done[o.id])<=at){s.done[o.id]=o.at;if(s.skipped[o.id]&&ts(s.skipped[o.id].at)<=at)delete s.skipped[o.id]}}
+ else if(o.op==="uncheck"){if(s.done[o.id]&&ts(s.done[o.id])<=at)delete s.done[o.id]}
+ else if(o.op==="skip"){if(!s.skipped[o.id]||ts(s.skipped[o.id].at)<=at){s.skipped[o.id]={reason:o.reason,at:o.at};if(s.done[o.id]&&ts(s.done[o.id])<=at)delete s.done[o.id]}}
+ else if(o.op==="unskip"){if(s.skipped[o.id]&&ts(s.skipped[o.id].at)<=at)delete s.skipped[o.id]}
+ else if(o.op==="add"){if(!s.mine.some(m=>m.id===o.item.id))s.mine.push(o.item)}
+ else if(o.op==="del"){s.mine=s.mine.filter(m=>m.id!==o.id);delete s.done[o.id];delete s.skipped[o.id]}
+ else if(o.op==="hide"){s.hide=!!o.v}
+ return s}
+function rebuild(){S=P.reduce(apply,norm(JSON.parse(JSON.stringify(remote||S))));cache()}
+function cache(){localStorage.setItem(K,JSON.stringify(S));localStorage.setItem(PK,JSON.stringify(P))}
+function status(t,err){const el=$("status");el.textContent=t;el.classList.toggle("err",!!err)}
+const clock=d=>d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+function idle(){if(!token())status("Not connected, saving in this browser only");else if(lastSync)status("Synced "+clock(lastSync))}
+function change(o){o.at=o.at||now();P.push(o);apply(S,o);cache();render();
+ if(token()){status("Saving...");clearTimeout(timer);timer=setTimeout(flush,600)}else idle()}
+function b64d(b){const bin=atob(b.replace(/\s/g,""));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
+function b64e(s){const u=new TextEncoder().encode(s);let bin="";for(let i=0;i<u.length;i++)bin+=String.fromCharCode(u[i]);return btoa(bin)}
+function hdrs(){const h={"Accept":"application/vnd.github+json"};const t=token();if(t)h.Authorization="Bearer "+t;return h}
+async function why(r){let m="";try{m=(await r.json()).message||""}catch(e){}
+ if(r.status===401)return"token not accepted";if(r.status===403&&/rate limit/i.test(m))return"GitHub rate limit, try again soon";
+ if(r.status===403||r.status===404&&token())return"token can't write to jack-todo";return(m||("HTTP "+r.status)).slice(0,80)}
+const RAW="https://raw.githubusercontent.com/hyperpixelca/jack-todo/state/state.json";
+async function pull(){const r=await fetch(API+"?ref=state&t="+Date.now(),{headers:hdrs(),cache:"no-store"});
+ if(r.status===404&&!token()){remote=norm({});sha=null;return}
+ if((r.status===403||r.status===429)&&!token()){const w=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(w.ok){remote=norm(await w.json());sha=null;return}}
+ if(!r.ok)throw new Error(await why(r));const j=await r.json();sha=j.sha;remote=norm(JSON.parse(b64d(j.content)))}
+async function flush(){if(!token()){idle();return}if(busy){clearTimeout(timer);timer=setTimeout(flush,600);return}
+ busy=true;status("Saving...");
+ try{if(!remote)await pull();
+  for(let tries=0;;tries++){const n=P.length;const next=P.slice(0,n).reduce(apply,norm(JSON.parse(JSON.stringify(remote))));
+   const body={message:"Update to-do state",content:b64e(JSON.stringify(next,null,1)+"\n"),branch:"state"};if(sha)body.sha=sha;
+   const r=await fetch(API,{method:"PUT",headers:Object.assign(hdrs(),{"Content-Type":"application/json"}),body:JSON.stringify(body),cache:"no-store"});
+   if(r.ok){const j=await r.json();sha=j.content.sha;remote=next;P=P.slice(n);rebuild();render();lastSync=new Date();break}
+   const conflict=r.status===409||r.status===422&&/sha/i.test(await r.clone().text());
+   if(conflict&&tries<4){await pull();continue}
+   throw new Error(await why(r))}
+  if(P.length){busy=false;return flush()}idle()}
+ catch(e){status("Sync error: "+(e.message||"network problem"),true)}
+ finally{busy=false}}
+async function load(){if(!token())status("Not connected, saving in this browser only");else status("Loading...");
+ try{await pull();rebuild();render();if(token()){lastSync=new Date();if(P.length)await flush();else idle()}else idle()}
+ catch(e){status("Sync error: "+(e.message||"network problem")+". Showing this browser's copy.",true)}}
+function row(it,mine){const done=!!S.done[it.id],sk=S.skipped[it.id];const ed=editing===it.id;
+ return `<div class="item ${done?"done":""} ${sk?"skipped":""}"><input type="checkbox" data-id="${esc(it.id)}" ${done?"checked":""} ${sk?"disabled":""}><div class="body"><div class="t">${esc(it.t)}${it.tag?`<span class="tag ${it.hot?"hot":""}">${esc(it.tag)}</span>`:""}${sk?`<span class="pill">Skipped</span><button class="undo" data-unskip="${esc(it.id)}">Undo</button>`:""}</div>${it.d?`<div class="d">${esc(it.d)}</div>`:""}${sk&&sk.reason?`<div class="why">${esc(sk.reason)}</div>`:""}${ed?`<div class="skipbox"><input id="skipIn" placeholder="Reason, like moved to next week or job canceled"><button class="pri" data-skipsave="${esc(it.id)}">Save</button><button data-skipcancel="1">Cancel</button></div>`:""}</div><div class="acts">${!sk&&!done&&!ed?`<button class="sk" data-skip="${esc(it.id)}">Skip</button>`:""}${mine?`<button class="del" data-del="${esc(it.id)}" title="Remove">×</button>`:""}</div></div>`}
+function render(){const keep=$("skipIn")?$("skipIn").value:null;
+ $("updated").textContent=UPDATED;
+ $("lists").innerHTML=LISTS.map(l=>{const b=l.brand;
   const st=b?` class="brand" style="--bpl:${b.primary};--btl:${b.text};--bcl:${b.check};--bpd:${b.primaryDark};--btd:${b.textDark};--bcd:${b.checkDark};--lb:${b.logoBg}"`:"";
   const lg=b&&b.logo?`<span class="logo"><img src="${b.logo}" alt="${esc(l.title)} logo" style="height:${b.h||36}px"></span>`:"";
   return `<section${st}><div class="sh">${lg}<h2>${esc(l.title)}</h2></div>${l.items.map(it=>row(it)).join("")}</section>`}).join("");
- document.getElementById("mine").innerHTML=S.mine.map((it,i)=>row(it,true,i)).join("");
- document.getElementById("app").classList.toggle("hide-done",S.hide);
- document.getElementById("toggleDone").classList.toggle("on",S.hide);
- const all=[...LISTS.flatMap(l=>l.items),...S.mine];const n=all.filter(i=>S.done[i.id]).length;
- document.getElementById("count").textContent=`${n} of ${all.length} done`;
-}
-document.addEventListener("change",e=>{if(e.target.dataset.id){S.done[e.target.dataset.id]=e.target.checked;if(!e.target.checked)delete S.done[e.target.dataset.id];save();render()}});
-document.addEventListener("click",e=>{if(e.target.classList.contains("del")){const it=S.mine.splice(+e.target.dataset.i,1)[0];delete S.done[it.id];save();render()}});
-function add(){const v=document.getElementById("newItem").value.trim();if(!v)return;S.mine.push({id:"mine-"+Date.now(),t:v});document.getElementById("newItem").value="";save();render()}
-document.getElementById("addBtn").onclick=add;
-document.getElementById("newItem").addEventListener("keydown",e=>{if(e.key==="Enter")add()});
-document.getElementById("toggleDone").onclick=()=>{S.hide=!S.hide;save();render()};
-render();
+ $("mine").innerHTML=S.mine.map(it=>row(it,true)).join("");
+ $("app").classList.toggle("hide-done",S.hide);$("toggleDone").classList.toggle("on",S.hide);
+ const all=[...LISTS.flatMap(l=>l.items),...S.mine];const n=all.filter(i=>S.done[i.id]).length,k=all.filter(i=>S.skipped[i.id]).length;
+ $("count").textContent=`${n} of ${all.length} done, ${k} skipped`;
+ $("syncBtn").innerHTML=token()?"&#9881; Sync":"&#9881; Connect sync";
+ const si=$("skipIn");if(si){if(keep!=null)si.value=keep;else si.focus()}}
+function saveSkip(id){const v=($("skipIn").value||"").trim();editing=null;change({op:"skip",id,reason:v})}
+document.addEventListener("change",e=>{const id=e.target.dataset&&e.target.dataset.id;if(id)change({op:e.target.checked?"check":"uncheck",id})});
+document.addEventListener("click",e=>{const d=e.target.dataset||{};
+ if(d.skip){editing=d.skip;render()}
+ else if(d.skipsave)saveSkip(d.skipsave);
+ else if(d.skipcancel){editing=null;render()}
+ else if(d.unskip)change({op:"unskip",id:d.unskip});
+ else if(d.del){if(editing===d.del)editing=null;change({op:"del",id:d.del})}});
+document.addEventListener("keydown",e=>{if(e.target.id==="skipIn"){if(e.key==="Enter"){e.preventDefault();saveSkip(editing)}else if(e.key==="Escape"){editing=null;render()}}});
+function add(){const v=$("newItem").value.trim();if(!v)return;const at=now();$("newItem").value="";change({op:"add",item:{id:"mine-"+Date.now(),t:v,at},at})}
+$("addBtn").onclick=add;
+$("newItem").addEventListener("keydown",e=>{if(e.key==="Enter")add()});
+$("toggleDone").onclick=()=>change({op:"hide",v:!S.hide});
+$("syncBtn").onclick=()=>{const p=$("syncPanel");p.hidden=!p.hidden;if(!p.hidden)$("tokenIn").focus()};
+$("tokenSave").onclick=async()=>{const v=$("tokenIn").value.trim();if(!v)return;localStorage.setItem(TK,v);$("tokenIn").value="";$("syncPanel").hidden=true;render();remote=null;sha=null;
+ status("Connecting...");try{await pull();rebuild();render();await flush()}catch(e){status("Sync error: "+(e.message||"network problem"),true)}};
+$("tokenDisc").onclick=()=>{localStorage.removeItem(TK);$("tokenIn").value="";$("syncPanel").hidden=true;lastSync=null;render();idle()};
+$("tokenIn").addEventListener("keydown",e=>{if(e.key==="Enter")$("tokenSave").click()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&!busy&&!P.length)load()});
+render();load();
 </script>
 </body>
 </html>

@@ -72,7 +72,7 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 </div>
 <p class="status" id="status"></p>
 <div class="sync" id="syncPanel" hidden>
-  <p>Paste your GitHub fine-grained token for the jack-todo repo. It stays in this browser only. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a token</a></p>
+  <p>Paste your GitHub fine-grained token for the hypx-todo repo. It stays in this browser only. <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Create a token</a></p>
   <div class="row"><input type="password" id="tokenIn" placeholder="github_pat_..." autocomplete="off" spellcheck="false"><button class="pri" id="tokenSave">Save</button><button id="tokenDisc">Disconnect</button></div>
 </div>
 <div id="lists"></div>
@@ -127,7 +127,7 @@ const LISTS = [
 ];
 // ===== end of edit block =====
 const K="jack-todo-v1",TK="jack-todo-token",PK="jack-todo-pending",MK="jack-todo-migrated";
-const API="https://api.github.com/repos/hyperpixelca/jack-todo/contents/state.json";
+const API="https://api.github.com/repos/hyperpixelca/hypx-todo/contents/state.json";
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const now=()=>new Date().toISOString();
@@ -169,8 +169,8 @@ function b64e(s){const u=new TextEncoder().encode(s);let bin="";for(let i=0;i<u.
 function hdrs(){const h={"Accept":"application/vnd.github+json"};const t=token();if(t)h.Authorization="Bearer "+t;return h}
 async function why(r){let m="";try{m=(await r.json()).message||""}catch(e){}
  if(r.status===401)return"token not accepted";if(r.status===403&&/rate limit/i.test(m))return"GitHub rate limit, try again soon";
- if(r.status===403||r.status===404&&token())return"token can't write to jack-todo";return(m||("HTTP "+r.status)).slice(0,80)}
-const RAW="https://raw.githubusercontent.com/hyperpixelca/jack-todo/state/state.json";
+ if(r.status===403||r.status===404&&token())return"token can't write to hypx-todo";return(m||("HTTP "+r.status)).slice(0,80)}
+const RAW="https://raw.githubusercontent.com/hyperpixelca/hypx-todo/state/state.json";
 async function pull(){const r=await fetch(API+"?ref=state&t="+Date.now(),{headers:hdrs(),cache:"no-store"});
  if(r.status===404&&!token()){remote=norm({});sha=null;return}
  if((r.status===403||r.status===429)&&!token()){const w=await fetch(RAW+"?t="+Date.now(),{cache:"no-store"});if(w.ok){remote=norm(await w.json());sha=null;return}}

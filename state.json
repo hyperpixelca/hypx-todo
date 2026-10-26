@@ -1,5 +1,7 @@
 {
- "done": {},
+ "done": {
+  "rhr-pages-check": "2026-10-26T17:47:30.333Z"
+ },
  "skipped": {
   "el-price-page": {
    "reason": "will do this down the road, can remove",

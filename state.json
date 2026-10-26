@@ -1,6 +1,11 @@
 {
  "done": {},
- "skipped": {},
+ "skipped": {
+  "el-price-page": {
+   "reason": "will do this down the road, can remove",
+   "at": "2026-10-26T17:47:26.598Z"
+  }
+ },
  "mine": [],
  "hide": true
 }

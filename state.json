@@ -1,29 +1,6 @@
 {
- "done": {
-  "el-planning-call": "2026-10-23T20:13:01.973Z",
-  "el-home-popup": "2026-10-23T20:13:01.973Z",
-  "el-3pages-call": "2026-10-23T20:13:01.973Z",
-  "wrong-numbers": "2026-10-23T20:13:01.973Z",
-  "cbs-reply": "2026-10-23T20:13:01.973Z",
-  "salem-review": "2026-10-23T20:13:01.973Z",
-  "tribute-sarah": "2026-10-23T20:13:01.973Z",
-  "shayan-tag": "2026-10-23T20:13:01.973Z",
-  "el-chapel-numbers": "2026-10-23T20:16:02.494Z",
-  "mc-sept-import": "2026-10-23T20:16:19.408Z",
-  "sonny-photo": "2026-10-23T20:21:50.115Z",
-  "gaynell-fb-email": "2026-10-24T03:40:18.625Z",
-  "sactomofo-blogs": "2026-10-24T05:41:15.603Z"
- },
- "skipped": {
-  "el-price-page": {
-   "reason": "will do in the future",
-   "at": "2026-10-23T20:16:10.078Z"
-  },
-  "gameday-grill": {
-   "reason": "not relevant",
-   "at": "2026-10-23T20:19:07.547Z"
-  }
- },
+ "done": {},
+ "skipped": {},
  "mine": [],
  "hide": true
 }

@@ -28,7 +28,7 @@ section.brand .item input[type=checkbox]{accent-color:var(--bc)}
 section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 @media (prefers-color-scheme:dark){section.brand{--bp:var(--bpd);--bt:var(--btd);--bc:var(--bcd)}}
 .item input[type=checkbox]{width:20px;height:20px;margin-top:2px;flex:none;accent-color:var(--accent);cursor:pointer}
-.t{font-weight:600}.d{color:var(--muted);font-size:14px;margin-top:2px}
+.lk{margin-top:4px;font-size:14px}.lk a{color:var(--accent);margin-right:14px;font-weight:600}.t{font-weight:600}.d{color:var(--muted);font-size:14px;margin-top:2px}
 .tag{display:inline-block;font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:0 8px;margin-left:6px;font-weight:500}
 .tag.hot{color:var(--hot);border-color:var(--hot)}
 .item.done .t,.item.done .d{text-decoration:line-through;opacity:.55}
@@ -85,7 +85,7 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 </main>
 <script>
 // ===== Ops Orchestrator edits this block =====
-const UPDATED = "Wed Oct 28, 2026, 11:45 AM PT";
+const UPDATED = "Wed Oct 28, 2026, 11:50 AM PT";
 const LISTS = [
  {title:"East Lawn", brand:{logo:"logos/eastlawn.png", h:40, logoBg:"#F5F0E4", primary:"#384920", text:"#384920", check:"#5A762B", primaryDark:"#5A762B", textDark:"#E8CA64", checkDark:"#E8CA64"}, items:[
   {id:"el-ddlm-followup-email", t:"Dia de los Muertos follow-up email"},
@@ -114,14 +114,14 @@ const LISTS = [
   {id:"tcra-ceu-tracking", t:"Talk to Vicki about CEUs: show publicly on profiles? turn on certificates? allow quiz retakes?", d:"Option C approved and on hold until you hear back from Vicki. Website Manager has the CEU checklist ready: WPCode snippet, CEU value per course, CEU Total field. Certificates stay off for now. The 70% passing score and retakes are set on all 10 quizzes on staging (retake limit 1). Also ask Vicki whether she still emails Certificates of Completion by hand, since the CEU Webinars page promises them within 48 hours."},
   {id:"tcra-cart-filter", t:"Talk to Vicki about the CART/captioner filter on Find a Reporter"},
   {id:"tcra-dropbox-files", t:"Get the Dropbox files (2026 Convention photos, Board Meeting Minutes) to the team"},
-  {id:"tcra-header-account-link", t:"Fix Astra header account link (points to websitedemos.net starter-template leftover)", d:"Website Manager flagged it on staging 10/27. Needs your OK to fix."},
+  {id:"tcra-header-account-link", links:[{l:"Open staging site",u:"https://tncracom.wpcomstaging.com/"}], t:"Fix Astra header account link (points to websitedemos.net starter-template leftover)", d:"Website Manager flagged it on staging 10/27. Needs your OK to fix."},
   {id:"tcra-keisha-files", t:"Get Keisha's slides and screen recording shared with us", d:"Vicki forwarded the Drive links on 10/16 (Fw: Verify a license), but they aren't shared with hyperpixelca@gmail.com. Ask Vicki or Keisha to share or attach them."},
-  {id:"tcra-hoffa-review", t:"Review the Hoffa seminar build on staging", d:"Website Manager built it 10/27: landing page, CEU Webinars entry (1.0 CEU placeholder), and the 5-question quiz. Check the wrong answer choices, the page description, and the retake limit (currently 1). The Future of Law list link and double-slash checkout links are fixed."},
-  {id:"tcra-hoffa-vimeo", t:"Upload the Hoffa seminar video to Vimeo and send Website Manager the link", d:"Website Manager is building the Hoffa seminar on staging (listing card plus landing page matching the other seminars) with a placeholder for the Vimeo embed."},
+  {id:"tcra-hoffa-review", links:[{l:"Open Hoffa page on staging",u:"https://tncracom.wpcomstaging.com/hoffa-trial-seminar/"}], t:"Review the Hoffa seminar build on staging", d:"Website Manager built it 10/27: landing page, CEU Webinars entry (1.0 CEU placeholder), and the 5-question quiz. Check the wrong answer choices, the page description, and the retake limit (currently 1). The Future of Law list link and double-slash checkout links are fixed."},
+  {id:"tcra-hoffa-vimeo", links:[{l:"Vimeo upload",u:"https://vimeo.com/upload"}], t:"Upload the Hoffa seminar video to Vimeo and send Website Manager the link", d:"Website Manager is building the Hoffa seminar on staging (listing card plus landing page matching the other seminars) with a placeholder for the Vimeo embed."},
   {id:"tcra-board-headshots", t:"Get board headshots and bios from Vicki"}
  ]},
  {title:"Hyper Pixel (internal)", items:[
-  {id:"jack-todo-repo", t:"Delete the old jack-todo repo on GitHub", d:"It only holds the old redirect page. Settings, then Delete this repository, at the bottom. I can't delete repos from here."},
+  {id:"jack-todo-repo", links:[{l:"Open repo settings",u:"https://github.com/hyperpixelca/jack-todo/settings"}], t:"Delete the old jack-todo repo on GitHub", d:"It only holds the old redirect page. Settings, then Delete this repository, at the bottom. I can't delete repos from here."},
   {id:"stephanie-consult", t:"Stephanie Mena consult", tag:"Oct 27"}
  ]}
 ];
@@ -192,7 +192,7 @@ async function load(){if(!token())status("Not connected, saving in this browser 
  try{await pull();rebuild();render();if(token()){lastSync=new Date();if(P.length)await flush();else idle()}else idle()}
  catch(e){status("Sync error: "+(e.message||"network problem")+". Showing this browser's copy.",true)}}
 function row(it,mine){const done=!!S.done[it.id],sk=S.skipped[it.id];const ed=editing===it.id;
- return `<div class="item ${done?"done":""} ${sk?"skipped":""}"><input type="checkbox" data-id="${esc(it.id)}" ${done?"checked":""} ${sk?"disabled":""}><div class="body"><div class="t">${esc(it.t)}${it.tag?`<span class="tag ${it.hot?"hot":""}">${esc(it.tag)}</span>`:""}${sk?`<span class="pill">Skipped</span><button class="undo" data-unskip="${esc(it.id)}">Undo</button>`:""}</div>${it.d?`<div class="d">${esc(it.d)}</div>`:""}${sk&&sk.reason?`<div class="why">${esc(sk.reason)}</div>`:""}${ed?`<div class="skipbox"><input id="skipIn" placeholder="Reason, like moved to next week or job canceled"><button class="pri" data-skipsave="${esc(it.id)}">Save</button><button data-skipcancel="1">Cancel</button></div>`:""}</div><div class="acts">${!sk&&!done&&!ed?`<button class="sk" data-skip="${esc(it.id)}">Skip</button>`:""}${mine?`<button class="del" data-del="${esc(it.id)}" title="Remove">×</button>`:""}</div></div>`}
+ return `<div class="item ${done?"done":""} ${sk?"skipped":""}"><input type="checkbox" data-id="${esc(it.id)}" ${done?"checked":""} ${sk?"disabled":""}><div class="body"><div class="t">${esc(it.t)}${it.tag?`<span class="tag ${it.hot?"hot":""}">${esc(it.tag)}</span>`:""}${sk?`<span class="pill">Skipped</span><button class="undo" data-unskip="${esc(it.id)}">Undo</button>`:""}</div>${it.d?`<div class="d">${esc(it.d)}</div>`:""}${it.links&&it.links.length?`<div class="lk">${it.links.filter(x=>/^https:\/\//.test(x.u)).map(x=>`<a href="${esc(x.u)}" target="_blank" rel="noopener">${esc(x.l)} &#8599;</a>`).join("")}</div>`:""}${sk&&sk.reason?`<div class="why">${esc(sk.reason)}</div>`:""}${ed?`<div class="skipbox"><input id="skipIn" placeholder="Reason, like moved to next week or job canceled"><button class="pri" data-skipsave="${esc(it.id)}">Save</button><button data-skipcancel="1">Cancel</button></div>`:""}</div><div class="acts">${!sk&&!done&&!ed?`<button class="sk" data-skip="${esc(it.id)}">Skip</button>`:""}${mine?`<button class="del" data-del="${esc(it.id)}" title="Remove">×</button>`:""}</div></div>`}
 function render(){const keep=$("skipIn")?$("skipIn").value:null;
  $("updated").textContent=UPDATED;
  $("lists").innerHTML=LISTS.map(l=>{const b=l.brand;

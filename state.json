@@ -19,12 +19,23 @@
   "rhr-2500-off-video": "2026-10-30T03:36:10.755Z",
   "tcra-header-account-link": "2026-10-30T03:36:43.418Z",
   "tcra-hoffa-review": "2026-10-30T03:36:48.053Z",
-  "tcra-hoffa-vimeo": "2026-10-30T03:36:52.678Z"
+  "tcra-hoffa-vimeo": "2026-10-30T03:36:52.678Z",
+  "wrong-numbers": "2026-10-29T19:13:38.082Z",
+  "cbs-reply": "2026-10-29T19:13:38.082Z",
+  "salem-review": "2026-10-29T19:13:38.082Z",
+  "tribute-sarah": "2026-10-29T19:13:38.082Z",
+  "gameday-grill": "2026-10-29T19:13:38.082Z",
+  "jack-todo-repo": "2026-10-29T19:23:40.962Z",
+  "rhr-lunch-learn-video": "2026-10-30T20:09:05.701Z"
  },
  "skipped": {
   "el-price-page": {
    "reason": "will do this down the road, can remove",
    "at": "2026-10-26T17:47:26.598Z"
+  },
+  "smf-dns": {
+   "reason": "when Jasjit emails back with an answer to the DNS problem, add any subsequent tasks for me back to this list",
+   "at": "2026-10-30T20:21:01.034Z"
   }
  },
  "mine": [],

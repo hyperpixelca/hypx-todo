@@ -1,6 +1,11 @@
 {
  "done": {},
- "skipped": {},
+ "skipped": {
+  "rhr-copycat-reply": {
+   "reason": "ill talk to virgil about this next time i talk to him",
+   "at": "2026-11-02T20:33:19.303Z"
+  }
+ },
  "mine": [],
  "hide": true
 }

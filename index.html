@@ -85,45 +85,27 @@ section.brand .tag:not(.hot){color:var(--bt);border-color:var(--bt)}
 </main>
 <script>
 // ===== Ops Orchestrator edits this block =====
-const UPDATED = "Fri Oct 30, 2026, 7:30 PM PT";
+const UPDATED = "Mon Nov 2, 2026, 7:40 AM PT";
 const LISTS = [
  {title:"East Lawn", brand:{logo:"logos/eastlawn.png", h:40, logoBg:"#F5F0E4", primary:"#384920", text:"#384920", check:"#5A762B", primaryDark:"#5A762B", textDark:"#E8CA64", checkDark:"#E8CA64"}, items:[
-  {id:"el-ddlm-followup-email", t:"Dia de los Muertos follow-up email"},
   {id:"el-call-buttons", t:"Fix the green \"Call East Lawn\" buttons on 3 chapel pages", d:"The body buttons under each chapel's address and hours dial East Sac (916) 732-2000. Elk Grove has 2 that should be 732-2031, Greenback & I-80 has 2 that should be 732-2020, and South Sacramento has 1 that should be 732-2026. The red Call Now buttons at the top and the footer 732-2000 listing are fine. Website Manager can QA after the fix.", links:[{l:"East Lawn site",u:"https://eastlawn.com/"}]},
   {id:"el-sentiment-emails", t:"East Lawn sentiment emails"},
-  {id:"el-daniel-victoria-landing", t:"Update the Daniel and Victoria landing pages on the East Lawn site"},
-  {id:"el-daniel-victoria-wpforms", t:"Create WPForms for Daniel and Victoria on the East Lawn site"},
-  {id:"el-price-page", t:"Make a permanent price list page", d:"Until it exists, the Ads price sitelink points to /services/.", tag:"Later"},
+   {id:"el-google-pmax-exclusions", t:"Reply to Stephanie Mena (Google) on East Lawn: PMax exclusions and the Elk Grove test", d:"She sent URL exclusions and text guidelines for the PMax calls-only campaign on 10/28 and followed up 10/30. East Lawn is now approved for the AI Brief beta, so the AI Brief fields show when you turn on text customization in Elk Grove TARGETED. Plug them in yourself or book her 10-minute screen share with Dana.", links:[{l:"Stephanie thread",u:"https://mail.google.com/mail/u/?authuser=hyperpixelca@gmail.com#all/1a17e9e4c78c2c92"}]},
  ]},
  {title:"Bella Bru Cafe", brand:{logo:"logos/bellabru.png", h:52, logoBg:"#FFFFFF", primary:"#426B56", text:"#623A14", check:"#426B56", primaryDark:"#426B56", textDark:"#CEAC8C", checkDark:"#CEAC8C"}, items:[
  ]},
  {title:"Remarkable Home Remodeling", brand:{logo:"logos/remarkable.png", h:34, logoBg:"#FFFFFF", primary:"#D4642C", text:"#112E36", check:"#D4642C", primaryDark:"#D4642C", textDark:"#D4642C", checkDark:"#D4642C"}, items:[
-  {id:"rhr-2500-off-video", t:"Edit Virgil's $2,500 off video"},
-  {id:"rhr-pages-check", t:"RHR Meta launch: reply to Shayan, pick launch timing and give the go, decide on Bathroom card 3 photo", d:"The landing and thank-you page tests passed, including the test call. Reply to Shayan, pick a launch timing from Meta Specialist's options, and decide whether to keep or swap the Bathroom card 3 photo."},
-  {id:"rhr-halloween-nl", t:"Halloween newsletter", d:"Remarkable Home Remodeling Halloween newsletter."},
-  {id:"rhr-lunch-learn-video", t:"Edit Remarkable lunch and learn video"}
+   {id:"rhr-copycat-reply", t:"Reply to Amy about the \"Remarkable installations\" ad that uses our logo font", d:"Amy emailed 10/30 on Virgil's behalf after spotting the ad on Facebook.", links:[{l:"Amy's email",u:"https://mail.google.com/mail/u/?authuser=hyperpixelca@gmail.com#all/1a18e46dba02359f"}]}
  ]},
  {title:"SactoMoFo", brand:{logo:"logos/sactomofo.png", h:44, logoBg:"#000000", primary:"#CA2923", text:"#CA2923", check:"#EF6723", primaryDark:"#EF6723", textDark:"#EF6723", checkDark:"#E8A119"}, items:[
-  {id:"smf-weekly-newsletter", t:"Weekly newsletter"},
-  {id:"smf-mailchimp-instructions", t:"Send Mailchimp instructions"},
-  {id:"smf-dns", t:"Edit DNS: add the Mailchimp records at dreamersi.net", d:"Add the 2 DKIM CNAME records and the DMARC TXT record from the Mailchimp domain setup, start authentication in Mailchimp, then reply to Jasjit and James.", links:[{l:"Jasjit thread",u:"https://mail.google.com/mail/u/?authuser=jack@hyperpixelca.com#all/1a16bf25860a0580"}]},
  ]},
  {title:"Gaynell Rogers", items:[
   {id:"gr-roy-contact-email", t:"Roy: add gaynellrogers@gmail.com to his contact page for international and media inquiries", d:"Gaynell replied 10/27 (Workspace inbox). She likes the Charlie Musselwhite contact page format. Confirm whether she means the Facebook contact field, the website contact page, or both, then reply to her."}
  ]},
  {title:"TCRA", items:[
-  {id:"tcra-email-decision", t:"Answer Vicki on board email: will administrator@ mail and folders migrate, and who supports the site after SiteGround"},
-  {id:"tcra-home-boxes", t:"Vicki: how to edit the homepage boxes, and can the sidebar show more than the next event", d:"She asked on 10/23 and you said you would take a look."},
-  {id:"tcra-ceu-tracking", t:"Talk to Vicki about CEUs: show publicly on profiles? turn on certificates? allow quiz retakes?", d:"Option C approved and on hold until you hear back from Vicki. Website Manager has the CEU checklist ready: WPCode snippet, CEU value per course, CEU Total field. Certificates stay off for now. The 70% passing score and retakes are set on all 10 quizzes on staging (retake limit 1). Also ask Vicki whether she still emails Certificates of Completion by hand, since the CEU Webinars page promises them within 48 hours."},
-  {id:"tcra-cart-filter", t:"Talk to Vicki about the CART/captioner filter on Find a Reporter"},
-  {id:"tcra-dropbox-files", t:"Get the Dropbox files (2026 Convention photos, Board Meeting Minutes) to the team"},
-  {id:"tcra-header-account-link", links:[{l:"Open TCRA Login on staging",u:"https://tncracom.wpcomstaging.com/login/"}], t:"Review the fixed header account/login link on staging and check it on a phone", d:"Fixed on staging only 10/29: the header account icon now goes to the TCRA Login page instead of the starter template demo site (websitedemos.net). Website Manager checked it logged out on desktop. Waiting on your review and a phone check. Live site gets it when staging goes live."},
-  {id:"tcra-keisha-files", t:"Get Keisha's slides and screen recording shared with us", d:"Vicki forwarded the Drive links on 10/16 (Fw: Verify a license), but they aren't shared with hyperpixelca@gmail.com. Ask Vicki or Keisha to share or attach them."},
-  {id:"tcra-hoffa-review", links:[{l:"Open Hoffa page on staging",u:"https://tncracom.wpcomstaging.com/hoffa-trial-seminar/"}], t:"Review the Hoffa seminar page on staging: video starts at 3:40, page title hidden", d:"Website Manager embedded the video 10/29 and hid the page title like the other seminar pages. Also check the quiz wrong answer choices, the page description, the CEU Webinars entry (1.0 CEU placeholder), and the retake limit (currently 1)."},
-  {id:"tcra-hoffa-vimeo", links:[{l:"Open Hoffa page on staging",u:"https://tncracom.wpcomstaging.com/hoffa-trial-seminar/"}], t:"Done 10/29: Hoffa seminar video embedded on staging", d:"Website Manager embedded it on the staging landing page 10/29. It starts at 3:40. Your review is the item above."},
-  {id:"tcra-board-headshots", t:"Get board headshots and bios from Vicki"}
  ]},
  {title:"Hyper Pixel Website Build - waiting on Jack", items:[
+   {id:"hypx-web-newsletter-name", t:"Pick the newsletter name: Hyper Pixel Insider or Sacramento Marketing Insider", d:"The AI check opt-in checkbox and the issue 1 outline use different names."},
   {id:"hypx-web-go", t:"Give the go to start building hyperpixelca.com", d:"Grok Build is installed on the bots' computer. Nothing gets coded until you say go."},
   {id:"hypx-web-hosting-repo", t:"OK the hosting, private repo and preview site", d:"Website Manager recommends a private GitHub repo deploying to Vercel, with a preview link for every draft."},
   {id:"hypx-web-signins", t:"Vercel and Stripe sign-ins", d:"Do these in your 1:1 chat with Website Manager once you give the go."},
@@ -140,8 +122,7 @@ const LISTS = [
   {id:"hypx-web-review-level", t:"Decide how much human review each tier gets after the first month", d:"For now, you approve everything during a client's first month."}
  ]},
  {title:"Hyper Pixel (internal)", items:[
-  {id:"jack-todo-repo", links:[{l:"Open repo settings",u:"https://github.com/hyperpixelca/jack-todo/settings"}], t:"Delete the old jack-todo repo on GitHub", d:"It only holds the old redirect page. Settings, then Delete this repository, at the bottom. I can't delete repos from here."},
-  {id:"stephanie-consult", t:"Stephanie Mena consult", tag:"Oct 27"}
+   {id:"hp-billing-cards", t:"Update payment cards: Intuit renewal failed and Adobe card expiring", d:"Intuit couldn't renew the Hyper Pixel LLC subscription on 10/31, and Adobe Creative Cloud says the card on file expires soon (11/1 notice)."}
  ]}
 ];
 // ===== end of edit block =====
